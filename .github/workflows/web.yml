@@ -13,19 +13,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show repo tree (debug)
-        run: |
-          pwd
-          ls -la
-          echo "---- .github/workflows ----"
-          ls -la .github/workflows || true
-
       - name: Setup Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install pygbag (pin a stable version)
+      - name: Install pygbag (pin)
         run: pip install "pygbag==0.9.2"
 
       - name: Verify main.py exists
@@ -33,11 +26,7 @@ jobs:
           test -f main.py || (echo "ERROR: main.py not found at repo root" && exit 1)
 
       - name: Build web bundle
-        run: |
-          python -m pygbag --build --opt 2 .
-          echo "---- Built files ----"
-          ls -la build || true
-          ls -la build/web || (echo "ERROR: build/web missing; pygbag failed" && exit 1)
+        run: python -m pygbag --build .
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
